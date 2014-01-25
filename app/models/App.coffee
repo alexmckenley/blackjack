@@ -12,7 +12,7 @@ class window.App extends Backbone.Model
     dealerHand.first().flip()
     while (Math.min.apply(@, dealerHand.scores()) < 17)
       dealerHand.hit()
-    if playerHand.getBestScore() is dealerHand.getBestScore() then @trigger('push') 
+    if playerHand.getBestScore() is dealerHand.getBestScore() then @trigger('push')
     else if dealerHand.getBestScore() > playerHand.getBestScore() then playerHand.lose()
     else dealerHand.lose()
 
@@ -22,9 +22,10 @@ class window.App extends Backbone.Model
       @set('deck', new Deck())
     console.log(@get('deck').length)
     # @set('deck', new Deck()) if @lowDeck()
+    @trigger('unbind')
     @set('playerHand', @get('deck').dealPlayer())
     @set('dealerHand', @get('deck').dealDealer())
-    @trigger('rebind', @)
+    @trigger('rebind')
 
   lowDeck: ->
     if @get('deck').length > 8 then false else true

@@ -7,7 +7,7 @@ class window.Hand extends Backbone.Collection
   hit: -> @add(@deck.pop()).last()
 
   stand: ->
-    @trigger('stand', @)
+    @trigger('stand')
 
   lose: ->
     @trigger('lose')

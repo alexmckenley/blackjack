@@ -13,3 +13,7 @@ describe 'deck', ->
       expect(deck.length).toBe 49
       expect(deck.last()).toEqual hand.hit()
       expect(deck.length).toBe 48
+
+  describe 'dealPlayer', ->
+    it "should give us a hand with two cards", ->
+      expect(hand.length).toBe 2

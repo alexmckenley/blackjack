@@ -9,20 +9,18 @@ class window.AppView extends Backbone.View
 
   events:
     "click .hit-button": -> @model.get('playerHand').hit()
-    "click .stand-button": -> 
-      @toggleHit()
-      @toggleStand()
+    "click .stand-button": ->
+      @buttons(off)
       @model.get('playerHand').stand()
     "click .deal-button": ->
-      @toggleHit()
+      @buttons(on)
       @model.setNewHands()
       @status()
       @render()
 
   initialize: ->
-    @model.on('rebind', =>
-      @attachListeners()
-    )
+    @model.on('rebind', => @attachListeners())
+    @model.on('unbind', => @detachListeners())
     @attachListeners()
     @render()
 
@@ -35,28 +33,23 @@ class window.AppView extends Backbone.View
   attachListeners: ->
     @model.get('playerHand').on('stand', => @model.dealersTurn())
     @model.get('playerHand').on('lose', => 
-      @toggleHit()
-      @toggleStand()
+      @buttons(off)
       @status('lose'))
     @model.get('dealerHand').on('lose', => 
-      @toggleHit()
-      @toggleStand()
       @status('win'))
     @model.on('push', => @status('push'))
+
+  detachListeners: ->
+    @model.get('playerHand').off()
+    @model.get('dealerHand').off()
 
   status: (status) ->
     switch status
       when 'win' then @$el.parent().addClass('winner')
       when 'lose' then @$el.parent().addClass('loser')
       when 'push' then @$el.parent().addClass('push')
-      else @$el.parent().removeClass('loser winner')
-  toggleHit: ->
-    if @$('.hit-button').prop('disabled')
-      @$('.hit-button').prop('disabled', false)
-    else
-      @$('.hit-button').prop('disabled', true)
-  toggleStand: ->
-    if @$('.stand-button').prop('disabled')
-      @$('.stand-button').prop('disabled', false)
-    else
-      @$('.stand-button').prop('disabled', true)
+      else @$el.parent().removeClass('loser winner push')
+
+  buttons: (state)->
+      @$('.hit-button').prop('disabled', !state)
+      @$('.stand-button').prop('disabled', !state)
