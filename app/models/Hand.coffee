@@ -29,5 +29,5 @@ class window.Hand extends Backbone.Collection
   getBestScore: ->
     scores = @scores()
     return scores[0] if scores.length is 1
-    return scores[1] if scores[1] < 21
+    return scores[1] if scores[1] <= 21
     return scores[0]

@@ -34,7 +34,7 @@ class window.AppView extends Backbone.View
     @model.get('playerHand').on('stand', => @model.dealersTurn())
     @model.get('playerHand').on('lose', => @status('lose'))
     @model.get('dealerHand').on('lose', => @status('win'))
-    @model.get('dealerHand').on('push', => @status('push'))
+    @model.on('push', => @status('push'))
 
   status: (status) ->
     switch status
