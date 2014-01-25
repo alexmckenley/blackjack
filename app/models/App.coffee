@@ -8,12 +8,21 @@ class window.App extends Backbone.Model
 
   dealersTurn: ->
     console.log("It is dealer's turn")
-    # flip the card
-    # check the score
-    # decide hit or stand
+    dealerHand = @get('dealerHand')
+    playerHand = @get('playerHand')
+    dealerHand.first().flip()
+    while (Math.min.apply(@, dealerHand.scores()) < 17)
+      dealerHand.hit()
+      console.log()
+    if playerHand.getBestScore() is dealerHand.getBestScore() then @trigger('push') 
+    else if dealerHand.getBestScore() > playerHand.getBestScore() then playerHand.lose()
+    else dealerHand.lose()
+    # checks score decide hit or stand
     # if stand, display winner on screen
     # gameend
 
   setNewHands: ->
     @set('playerHand', @get('deck').dealPlayer())
     @set('dealerHand', @get('deck').dealDealer())
+    console.log("setNewHands: ", @)
+    @trigger('rebind', @)

@@ -10,13 +10,18 @@ class window.AppView extends Backbone.View
   events:
     "click .hit-button": -> @model.get('playerHand').hit()
     "click .stand-button": -> @model.get('playerHand').stand()
-    "click .deal-button": -> 
+    "click .deal-button": ->
+      console.log("Deal button: ", @)
       @model.setNewHands()
+      @status()
       @render()
 
   initialize: ->
-    @model.get('playerHand').on('stand', @model.dealersTurn)
-    @model.on('change:playerHand', -> @)
+    @model.on('rebind', =>
+      console.log("rebind event: ", @)
+      @attachListeners()
+    )
+    @attachListeners()
     @render()
 
   render: ->
@@ -24,3 +29,17 @@ class window.AppView extends Backbone.View
     @$el.html @template()
     @$('.player-hand-container').html new HandView(collection: @model.get 'playerHand').el
     @$('.dealer-hand-container').html new HandView(collection: @model.get 'dealerHand').el
+
+  attachListeners: ->
+    @model.get('playerHand').on('stand', => @model.dealersTurn())
+    @model.get('playerHand').on('lose', => @status('lose'))
+    @model.get('dealerHand').on('lose', => @status('win'))
+    @model.get('dealerHand').on('push', => @status('push'))
+
+  status: (status) ->
+    switch status
+      when 'win' then @$el.parent().addClass('winner')
+      when 'lose' then @$el.parent().addClass('loser')
+      when 'push' then @$el.parent().addClass('push')
+      else @$el.parent().removeClass('loser winner')
+
